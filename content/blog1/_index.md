@@ -1,5 +1,5 @@
 ---
-title: Home
+title: BLOG1
 ---
 
 <style type="text/css">
