@@ -1,6 +1,6 @@
-baseurl: "/"
+baseurl: "https://ha7m010.github.io/"
 languageCode: "en-US"
-title: "A Hugo theme inspired by paged.js"
+title: "ham's blog"
 theme: "hugo-paged"
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
 footnotereturnlinkcontents: "↩"
@@ -20,7 +20,7 @@ params:
   description: "A website built through Hugo with the hugo-paged theme."
   logo:
     en:
-      alt: LOGO TEXT
+      alt: 观测站
       img: # a path to the logo
   footer: "&copy; [Yihui Xie](https://yihui.org) {Year}"
 
