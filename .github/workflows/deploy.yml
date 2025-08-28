@@ -13,7 +13,7 @@ jobs:
     steps:
       # 1. 检出源码（包含子模块）
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           submodules: recursive
           token: ${{ secrets.BLOG_GITHUB_ACTION }}
