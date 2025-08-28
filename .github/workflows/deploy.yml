@@ -2,38 +2,42 @@ name: Build and Deploy Hugo Site
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 允许写入 Pages 仓库
+      contents: write
       
     steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.BLOG_GITHUB_ACTION }}
+          ref: master
+          fetch-depth: 0
           
-      # 2. 安装 Hugo
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: "0.148.2"
           extended: true
+          fallback: true
           
-      # 3. 构建站点
       - name: Build site
         run: |
-          hugo \
-            --minify \
-            --gc \
-            --cleanDestinationDir
+          # 添加详细日志输出
+          hugo version
+          hugo --minify --gc --cleanDestinationDir --verbose
           
-      # 4. 部署到 Pages 仓库
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          personal_token: ${{ BLOG_GITHUB_ACTION }} # 具有 repo 权限的 PAT
-          external_repository: ha7m010/ha7m010..github.io
+          personal_token: ${{ secrets.BLOG_GITHUB_ACTION }}
+          external_repository: ha7m010/ha7m010.github.io
           publish_dir: ./public
-          publish_branch: main # Pages 仓库的分支
-          keep_files: false # 每次清理旧文件
+          publish_branch: main
+          keep_files: true
           commit_message: "Deploy from ${{ github.sha }}"
