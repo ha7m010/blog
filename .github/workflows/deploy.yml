@@ -2,7 +2,7 @@ name: Build and Deploy Hugo Site
 
 on:
   push:
-    branches: [ master ]  # 使用 master 分支作为源码分支
+    branches: [ master ]
 
 jobs:
   build-deploy:
@@ -17,29 +17,29 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.BLOG_GITHUB_ACTION }}
-          ref: master  # 指定检出 master 分支
-          fetch-depth: 0  # 获取完整提交历史
+          ref: master
+          fetch-depth: 0
           
-      # 2. 安装 Hugo（修复 fallback 错误）
+      # 2. 安装 Hugo
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: "0.148.2"  # 确保版本字符串加引号
+          hugo-version: "0.148.2"
           extended: true
-          # 移除了不支持的 fallback 参数 ✅
           
-      # 3. 构建站点（添加详细日志）
+      # 3. 修复构建步骤 ✅
       - name: Build site
         run: |
           echo "=== 打印 Hugo 版本信息 ==="
           hugo version
           
           echo "=== 开始构建网站 ==="
+          # 移除了不支持的 --verbose 标志
           hugo \
             --minify \
             --gc \
             --cleanDestinationDir \
-            --verbose  # 添加详细日志输出
+            --logLevel info  # 使用支持的日志级别 ✅
       
       # 4. 部署到 Pages 仓库
       - name: Deploy to GitHub Pages
@@ -48,6 +48,6 @@ jobs:
           personal_token: ${{ secrets.BLOG_GITHUB_ACTION }}
           external_repository: ha7m010/ha7m010.github.io
           publish_dir: ./public
-          publish_branch: main  # Pages 仓库的分支
-          keep_files: true  # 保留历史提交
+          publish_branch: main
+          keep_files: true
           commit_message: "Deploy from ${{ github.sha }}"
