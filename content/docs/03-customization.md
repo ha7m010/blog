@@ -8,8 +8,6 @@ tags:
 weight: 3
 ---
 
-The more you know, the less real work you will get done. You have been warned.
-
 ## Site config
 
 In your site config file (`hugo.yaml` or `config.yaml`), you can customize some options such as the top menu or footer, which should be straightforward to understand if you take a look at the `exampleSite`'s config file.
