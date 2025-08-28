@@ -1,33 +1,45 @@
-name: ham's blog github action
+name: Build and Deploy Hugo Site
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+
 jobs:
   build-deploy:
-    runs-on: ubuntu-20.04
-#    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 允许写入 Pages 仓库
+      
     steps:
-      - name: Check out source
-        uses: actions/checkout@v2
-
-      - name: Setup hugo
+      # 1. 检出源码（包括子模块）
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ BLOG_GITHUB_ACTION }}
+          
+      # 2. 安装 Hugo
+      - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-#          hugo-version: "latest" # 可以修改为你使用的 Hugo 版本
-          hugo-version: "0.148.2" #
-          extended: true # 设置是否需要 extended 版本
-
-      - name: Build
-        run: hugo
-
-      - name: Deploy
+          hugo-version: "0.148.2"
+          extended: true
+          
+      # 3. 构建站点
+      - name: Build site
+        run: |
+          hugo \
+            --minify \
+            --gc \
+            --cleanDestinationDir
+          
+      # 4. 部署到 Pages 仓库
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          personal_token: ${{ BLOG_GITHUB_ACTION }} # 另外还支持 deploy_token 和 github_token
-          external_repository: ha7m010/ha7m010.github.io # 修改为你的 GitHub Pages 仓库
+          personal_token: ${{ secrets.PERSONAL_TOKEN }} # 具有 repo 权限的 PAT
+          external_repository: ha7m010/ha7m010..github.io
           publish_dir: ./public
-#          keep_files: false
-          publish_branch: master
-          # 如果使用自定义域名，还需要添加下面一行配置
-          #cname: www.example.com
+          publish_branch: main # Pages 仓库的分支
+          keep_files: false # 每次清理旧文件
+          commit_message: "Deploy from ${{ github.sha }}"
