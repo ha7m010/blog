@@ -1,1 +1,3 @@
-pubilc
+.hugo_build.lock
+/public/
+/resources/  # hugo生成的文件，也可忽略
